@@ -1,31 +1,47 @@
 import os
 
-# Name: read_file_name
-# Parameters: None
-# Return: f_name
-# Processes user's input and output's if user's input is invalid
+def dictionary(filename):
+    morse_dictionary = {}
+    morse_data = open(filename, 'r')
+    for line in morse_data:
+        items = line.split('  ')
+        key = items[1].strip()
+        value = items[0].split()
+        morse_dictionary[key] = value
+    morse_data.close()
+    return morse_dictionary
+
+def translate_morse(translation, input, output):
+    morse_dict = dictionary(translation)
+    with open(input, 'r') as file:
+        morse_lines = file.readlines()
+    t_lines = []
+    for line in morse_lines:
+        translated_words = []
+        for words in line.strip().split(' '):
+
+            word = ''.join(morse_dict[letter][0]
+            for letter in words.split())
+            translated_words.append(word)
+
+        t_lines.append(''.join(translated_words))
+
+    with open(output, 'w') as outfile:
+        outfile.write('\n'.join(t_lines) + '\n')
+
+
 def read_file_name():
-    f_name = input("Enter file name: ")
+    f_name = input("Enter file name, (first is to translate dictionary, second is to translate a file): ")
     while not os.path.isfile(f_name):
         f_name = input("File not exist. Enter file name: ")
     return f_name
 
 
-def dictionary(f_name):
-    mc_dict = {}
-    for line in f_name:
-        items  = line.split('\t')
-        key = items[1]
-        value = items[0]
-        mc_dict[key] = value
-    print(mc_dict)
 
-def main(f_name):
-    read_file_name()
-    dictionary(f_name)
+def main():
+    conversion_file = read_file_name()
+    input_file = read_file_name()
+    output_file = input("Enter the name of the output file: ")
+    translate_morse(conversion_file, input_file, output_file)
 
-
-main('f_name')
-
-
-
+main()
